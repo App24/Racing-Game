@@ -1,0 +1,2 @@
+objFile;textureFile;transparent;numberOfRows;boundingRadius;shineDamper;reflectivity;fakeLighting
+lamp;lamp;0;1;12.75;1;0;0

@@ -1,0 +1,2 @@
+objFile;textureFile;transparent;numberOfRows;boundingRadius;shineDamper;reflectivity;fakeLighting
+fern;fern;1;2;6.75;1;0;1

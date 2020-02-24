@@ -1,0 +1,2 @@
+objFile;textureFile;transparent;numberOfRows;boundingRadius;shineDamper;reflectivity;fakeLighting
+dragon;dragon;0;1;9;1;0;0

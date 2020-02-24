@@ -1,0 +1,9 @@
+id;modelName
+0;box
+1;lamp
+2;fern
+3;stall
+4;dragon
+5;grass
+6;car1
+7;car2

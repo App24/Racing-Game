@@ -1,0 +1,3 @@
+id;entityName
+0;box
+1;lamp

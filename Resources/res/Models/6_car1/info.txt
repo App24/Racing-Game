@@ -1,0 +1,2 @@
+objFile;textureFile;transparent;numberOfRows;boundingRadius;shineDamper;reflectivity;fakeLighting
+car1;car1;0;1;2;10;1;0

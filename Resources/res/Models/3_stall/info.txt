@@ -1,0 +1,2 @@
+objFile;textureFile;transparent;numberOfRows;boundingRadius;shineDamper;reflectivity;fakeLighting
+stall;stallTexture;0;1;5;1;0;0
