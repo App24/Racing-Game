@@ -71,4 +71,10 @@ public class ClickableComponent extends GuiComponent {
 		return false;
 	}
 
+	@Override
+	protected void onStatusUpdate() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

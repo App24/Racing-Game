@@ -10,6 +10,7 @@ public class Gui {
 	private GuiTexture texture;
 	private Vector2f position;
 	private Vector2f scale;
+	protected boolean hidden=false;
 	private List<GuiComponent> components=new ArrayList<GuiComponent>();
 	
 	public Gui(GuiTexture texture, Vector2f positiong, Vector2f scale) {
@@ -30,7 +31,19 @@ public class Gui {
 		this.scale=new Vector2f(scale, scale);
 	}
 	
+	public void setHidden(boolean hidden) {
+		this.hidden=hidden;
+		for(GuiComponent component:components) {
+			component.statusUpdate();
+		}
+	}
+	
+	public boolean isHidden() {
+		return hidden;
+	}
+	
 	public void addComponent(GuiComponent component) {
+		component.statusUpdate();
 		components.add(component);
 	}
 	
@@ -49,6 +62,7 @@ public class Gui {
 	
 	public void updateComponents() {
 		for(GuiComponent component:components) {
+			if(!hidden)
 			component.update();
 		}
 	}

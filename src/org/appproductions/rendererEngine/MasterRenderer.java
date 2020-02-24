@@ -22,9 +22,9 @@ import org.lwjgl.opengl.GL11;
 
 public class MasterRenderer {
 
-	private static float FOV = 70f;
-	private static final float NEAR_PLANE = 0.1f;
-	private static final float FAR_PLANE = 1000f;
+	public static float FOV = 70f;
+	public static final float NEAR_PLANE = 0.1f;
+	public static final float FAR_PLANE = 1000f;
 
 	private static final float RED = 1f;
 	private static final float GREEN = 0.5f;
@@ -54,6 +54,7 @@ public class MasterRenderer {
 		renderer=new EntityRenderer(shader,projectionMatrix);
 		terrainRenderer=new TerrainRenderer(terrainShader, projectionMatrix);
 		skyboxRenderer=new SkyboxRenderer(projectionMatrix);
+		
 	}
 	
 	public Matrix4f getProjectionMatrix() {
@@ -133,7 +134,6 @@ public class MasterRenderer {
 	public void processTerrain(Terrain terrain) {
 		terrains.add(terrain);
 	}
-
 	public void cleanUp() {
 		shader.cleanUp();
 		terrainShader.cleanUp();
@@ -142,7 +142,7 @@ public class MasterRenderer {
 
 	public void createProjectionMatrix() {
 		float aspectRatio = (float) DisplayManager.getWidth() / (float) DisplayManager.getHeight();
-		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
+		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
 		float x_scale = y_scale / aspectRatio;
 		float frustum_length = FAR_PLANE - NEAR_PLANE;
 

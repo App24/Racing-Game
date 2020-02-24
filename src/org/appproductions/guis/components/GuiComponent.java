@@ -19,6 +19,12 @@ public abstract class GuiComponent {
 		onUpdate();
 	}
 	
+	public void statusUpdate() {
+		onStatusUpdate();
+	}
+
 	protected abstract void onUpdate();
+	
+	protected abstract void onStatusUpdate();
 	
 }

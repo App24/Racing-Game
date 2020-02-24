@@ -23,6 +23,8 @@ import org.appproductions.guis.components.TextComponent;
 import org.appproductions.guis.components.interfaces.ICommand;
 import org.appproductions.input.Keyboard;
 import org.appproductions.input.Mouse;
+import org.appproductions.postProcessing.Fbo;
+import org.appproductions.postProcessing.PostProcessing;
 import org.appproductions.rendererEngine.DisplayManager;
 import org.appproductions.rendererEngine.Loader;
 import org.appproductions.rendererEngine.MasterRenderer;
@@ -41,8 +43,9 @@ public class MainGameLoop {
 	public static void main(String[] args) {
 		AudioMaster.init();
 		DisplayManager.createDisplay();
-		MasterRenderer renderer=new MasterRenderer();
 		TextMaster.init();
+		MasterRenderer renderer=new MasterRenderer();
+		
 		AudioMaster.setListenerData(0, 0, 0);
 		
 		FontType font=new FontType(Loader.loadTexture("Fonts/arial"), "Fonts/arial.fnt");
@@ -73,7 +76,7 @@ public class MainGameLoop {
 		terrains.add(terrain4);
 		WorldLoader.loadEntities();
 		
-		Light light=new Light(new Vector3f(0, 10000, -7000), new Vector3f(1f, 1f, 1f));
+		Light light=new Light(new Vector3f(1000000, 15000000, -700000), new Vector3f(1f, 1f, 1f));
 		
 		Player player=new Player(CachedModels.getTexturedModel(6), new Vector3f(0,0,-6), 0, 0, 0, 2);
 		
@@ -99,6 +102,9 @@ public class MainGameLoop {
 		gui.addComponent(new TextComponent("Click me", 1.5f, font, new Vector2f(0,0.35f), 1f, true, gui));
 		guis.add(gui);
 		
+		Fbo fbo=new Fbo(DisplayManager.getWidth(), DisplayManager.getHeight(), Fbo.DEPTH_RENDER_BUFFER);
+		PostProcessing.init();
+		
 		while(!DisplayManager.shouldClose()) {
 			camera.move();
 			player.move(terrains);
@@ -110,14 +116,19 @@ public class MainGameLoop {
 				Mouse.setGrabbed(!Mouse.isGrabbed());
 			}
 			
-			
+			fbo.bindFrameBuffer();
 			renderer.renderScene(terrains, light, camera);
+			fbo.unbindFrameBuffer();
+			PostProcessing.doPostProcessing(fbo.getColourTexture());
+
 			guiRenderer.render(guis);
 			TextMaster.render();
 			
 			DisplayManager.updateDisplay();
 		}
 		
+		PostProcessing.cleanUp();
+		fbo.cleanUp();
 		TextMaster.cleanUp();
 		Loader.cleanUp();
 		renderer.cleanUp();

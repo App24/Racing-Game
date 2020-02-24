@@ -25,4 +25,9 @@ public class SoundComponent extends GuiComponent {
 		source.play(buffer);
 	}
 
+	@Override
+	protected void onStatusUpdate() {
+		
+	}
+
 }

@@ -33,7 +33,6 @@ public class TextComponent extends GuiComponent {
 		this.centerText = centered;
 		this.leftText = false;
 		setPosition(position);
-		TextMaster.loadText(this);
 	}
 
 	public TextComponent(String text, float fontSize, FontType font, Vector2f position, float maxLineLength,
@@ -46,7 +45,6 @@ public class TextComponent extends GuiComponent {
 		this.centerText = centered;
 		this.leftText = left;
 		setPosition(position);
-		TextMaster.loadText(this);
 	}
 
 	public void setPosition(Vector2f pos) {
@@ -61,6 +59,14 @@ public class TextComponent extends GuiComponent {
 	@Override
 	protected void onUpdate() {
 
+	}
+	
+	@Override
+	public void onStatusUpdate() {
+		if(!gui.isHidden())
+			TextMaster.loadText(this);
+		else
+			TextMaster.removeText(this);
 	}
 
 	/**
