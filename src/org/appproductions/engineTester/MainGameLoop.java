@@ -32,6 +32,7 @@ import org.appproductions.terrains.Terrain;
 import org.appproductions.terrains.TerrainTexture;
 import org.appproductions.terrains.TerrainTexturePack;
 import org.appproductions.utils.CachedModels;
+import org.appproductions.utils.Config;
 import org.appproductions.utils.MousePicker;
 import org.appproductions.utils.Version;
 import org.joml.Vector2f;
@@ -39,23 +40,23 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 public class MainGameLoop {
-	
+
 	public static void main(String[] args) {
 		AudioMaster.init();
 		DisplayManager.createDisplay();
 		TextMaster.init();
-		MasterRenderer renderer=new MasterRenderer();
-		
+		MasterRenderer renderer = new MasterRenderer();
+
 		AudioMaster.setListenerData(0, 0, 0);
-		
-		FontType font=new FontType(Loader.loadTexture("Fonts/arial"), "Fonts/arial.fnt");
-		GUIText playerPosText=new GUIText("player pos", 1.5f, font, new Vector2f(0,0), 1f, false);
-		new GUIText(Version.getVersion(), 1.5f, font, new Vector2f(0,0.95f), 1f, false, true);
-		GUIText fpsText=new GUIText("fps", 1.5f, font, new Vector2f(0,0), 1f, false, true);
-		
+
+		FontType font = new FontType(Loader.loadTexture("Fonts/arial"), "Fonts/arial.fnt");
+		GUIText playerPosText = new GUIText("player pos", 1.5f, font, new Vector2f(0, 0), 1f, false);
+		new GUIText(Version.getVersion(), 1.5f, font, new Vector2f(0, 0.95f), 1f, false, true);
+		GUIText fpsText = new GUIText("fps", 1.5f, font, new Vector2f(0, 0), 1f, false, true);
+
 		ModelLoader.loadModels();
 		List<Terrain> terrains = new ArrayList<Terrain>();
-		
+
 		TerrainTexture backgroundTexture = new TerrainTexture(Loader.loadTexture("Map/grass"));
 		TerrainTexture rTexture = new TerrainTexture(Loader.loadTexture("Map/mud"));
 		TerrainTexture gTexture = new TerrainTexture(Loader.loadTexture("Map/grassFlower"));
@@ -75,23 +76,25 @@ public class MainGameLoop {
 		terrains.add(terrain3);
 		terrains.add(terrain4);
 		WorldLoader.loadEntities();
-		
-		Light light=new Light(new Vector3f(1000000, 15000000, -700000), new Vector3f(1f, 1f, 1f));
-		
-		Player player=new Player(CachedModels.getTexturedModel(6), new Vector3f(0,0,-6), 0, 0, 0, 2);
-		
+
+		Light light = new Light(new Vector3f(1000000, 15000000, -700000), new Vector3f(1f, 1f, 1f));
+
+		Player player = new Player(CachedModels.getTexturedModel(6), new Vector3f(0, 0, -6), 0, 0, 0, 2);
+
 		EntityManager.addEntity(player);
-		Camera camera=new Camera(player);
-		//AudioMaster.setListenerData(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
-		
+		Camera camera = new Camera(player);
+		// AudioMaster.setListenerData(camera.getPosition().x, camera.getPosition().y,
+		// camera.getPosition().z);
+
 		MousePicker.createPicker(camera, renderer.getProjectionMatrix(), terrains);
-		
-		GuiRenderer guiRenderer=new GuiRenderer();
-		List<Gui> guis=new ArrayList<Gui>();
-		Gui gui=new Gui(new GuiTexture(Loader.loadTexture("button"), Loader.loadImage("button")), new Vector2f(0f,1f-(0.1f/10)*16f), new Vector2f(0.1f,0.1f), true);
-		
+
+		GuiRenderer guiRenderer = new GuiRenderer();
+		List<Gui> guis = new ArrayList<Gui>();
+		Gui gui = new Gui(new GuiTexture(Loader.loadTexture("button"), Loader.loadImage("button")),
+				new Vector2f(0f, 1f - (0.1f / 10) * 16f), new Vector2f(0.1f, 0.1f), true);
+
 		gui.addComponent(new ClickableComponent(new ICommand() {
-			
+
 			@Override
 			public void onClick() {
 				player.reset();
@@ -99,36 +102,50 @@ public class MainGameLoop {
 			}
 		}, gui));
 		gui.addComponent(new SoundComponent(gui, "Audio/bounce"));
-		gui.addComponent(new TextComponent("Click me", 1.5f, font, new Vector2f(0,0.35f), 1f, true, gui));
+		gui.addComponent(new TextComponent("Click me", 1.5f, font, new Vector2f(0, 0.35f), 1f, true, gui));
 		guis.add(gui);
-		
-		Fbo fbo=new Fbo(DisplayManager.getWidth(), DisplayManager.getHeight(), Fbo.DEPTH_RENDER_BUFFER);
+
+		boolean antialiasing = Config.setConfig("options").get("Graphics", "Antialiasing", boolean.class);
+		boolean postprocessing = Config.setConfig("options").get("Graphics", "PostProcessing", boolean.class);
+
+		Fbo multisampleFbo = new Fbo(DisplayManager.getWidth(), DisplayManager.getHeight(), Fbo.DEPTH_RENDER_BUFFER);
+		Fbo outputFbo = new Fbo(DisplayManager.getWidth(), DisplayManager.getHeight(), Fbo.DEPTH_TEXTURE);
+		if (antialiasing)
+			multisampleFbo = new Fbo(DisplayManager.getWidth(), DisplayManager.getHeight());
 		PostProcessing.init();
-		
-		while(!DisplayManager.shouldClose()) {
+
+		while (!DisplayManager.shouldClose()) {
 			camera.move();
 			player.move(terrains);
-			playerPosText.setText("x: "+String.format("%.2f", player.getPosition().x)+" y: "+String.format("%.2f", player.getPosition().y)+" z: "+String.format("%.2f",player.getPosition().z));
-			fpsText.setText("FPS: "+DisplayManager.getFPS());
-			
+			playerPosText.setText("x: " + String.format("%.2f", player.getPosition().x) + " y: "
+					+ String.format("%.2f", player.getPosition().y) + " z: "
+					+ String.format("%.2f", player.getPosition().z));
+			fpsText.setText("FPS: " + DisplayManager.getFPS());
+
 			MousePicker.update();
-			if(Keyboard.isKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
+			if (Keyboard.isKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
 				Mouse.setGrabbed(!Mouse.isGrabbed());
 			}
-			
-			fbo.bindFrameBuffer();
+
+			multisampleFbo.bindFrameBuffer();
 			renderer.renderScene(terrains, light, camera);
-			fbo.unbindFrameBuffer();
-			PostProcessing.doPostProcessing(fbo.getColourTexture());
+			multisampleFbo.unbindFrameBuffer();
+			if (postprocessing) {
+				multisampleFbo.resolveToFbo(outputFbo);
+				PostProcessing.doPostProcessing(outputFbo.getColourTexture());
+			} else {
+				multisampleFbo.resolveToScreen();
+			}
 
 			guiRenderer.render(guis);
 			TextMaster.render();
-			
+
 			DisplayManager.updateDisplay();
 		}
-		
+
 		PostProcessing.cleanUp();
-		fbo.cleanUp();
+		multisampleFbo.cleanUp();
+		outputFbo.cleanUp();
 		TextMaster.cleanUp();
 		Loader.cleanUp();
 		renderer.cleanUp();
@@ -137,5 +154,5 @@ public class MainGameLoop {
 		AudioMaster.cleanUp();
 		DisplayManager.close();
 	}
-	
+
 }

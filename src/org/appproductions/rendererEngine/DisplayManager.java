@@ -45,7 +45,6 @@ public class DisplayManager {
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE);
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
 		if(config.get("Graphics", "Antialiasing", boolean.class)) {
-		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 8);
 		GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, 24);
 		}
 		window=GLFW.glfwCreateWindow(width, height, TITLE, 0, 0);
