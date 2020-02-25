@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.appproductions.config.Options;
 import org.appproductions.entities.Camera;
 import org.appproductions.entities.Entity;
 import org.appproductions.entities.EntityManager;
@@ -15,7 +16,6 @@ import org.appproductions.shaders.StaticShader;
 import org.appproductions.skybox.SkyboxRenderer;
 import org.appproductions.terrains.Terrain;
 import org.appproductions.terrains.TerrainShader;
-import org.appproductions.utils.Config;
 import org.appproductions.utils.Maths;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
@@ -45,12 +45,9 @@ public class MasterRenderer {
 	private SkyboxRenderer skyboxRenderer;
 	
 	public MasterRenderer() {
-		FOV=Config.setConfig("options").get("View", "FOV", float.class);
+		FOV=Options.getOption("Fov");
 		enableCulling();
 		createProjectionMatrix();
-		if (Config.setConfig("misc").get("Debug", "Wireframe", boolean.class)) {
-			enableWireframe();
-		}
 		renderer=new EntityRenderer(shader,projectionMatrix);
 		terrainRenderer=new TerrainRenderer(terrainShader, projectionMatrix);
 		skyboxRenderer=new SkyboxRenderer(projectionMatrix);
@@ -72,7 +69,8 @@ public class MasterRenderer {
 	}
 
 	public static void enableCulling() {
-		if (!Config.setConfig("misc").get("Debug", "DisableCulling", boolean.class)) {
+		boolean disableCuiing=Options.getOption("Disable Culling");
+		if (!disableCuiing) {
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glCullFace(GL11.GL_BACK);
 		}

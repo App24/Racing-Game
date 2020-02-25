@@ -23,19 +23,21 @@ public class Keyboard {
 
 	public static boolean isKeyPressed(int key) {
 		if (!locked) {
-			if (keys[key] && !keysPressed[key]) {
-				keysPressed[key] = true;
-				return true;
-			} else if (!keys[key]) {
-				keysPressed[key] = false;
-			}
+			if (key > -1)
+				if (keys[key] && !keysPressed[key]) {
+					keysPressed[key] = true;
+					return true;
+				} else if (!keys[key]) {
+					keysPressed[key] = false;
+				}
 		}
 		return false;
 	}
 
 	public static boolean isKeyDown(int key) {
 		if (!locked)
-			return keys[key];
+			if (key > -1)
+				return keys[key];
 		return false;
 	}
 

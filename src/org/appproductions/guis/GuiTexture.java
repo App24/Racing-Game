@@ -1,21 +1,16 @@
 package org.appproductions.guis;
 
 import org.appproductions.rendererEngine.Image;
+import org.appproductions.rendererEngine.Loader;
 
 public class GuiTexture {
 	private int textureID;
 	private int width, height;
 
-	public GuiTexture(int textureID, Image image) {
-		this.textureID=textureID;
+	public GuiTexture(Image image) {
+		this.textureID=Loader.loadTexture(image);
 		this.width=image.getWidth();
 		this.height=image.getHeight();
-	}
-	
-	public GuiTexture(int textureID) {
-		this.textureID=textureID;
-		width=1;
-		height=1;
 	}
 	
 	public int getWidth() {

@@ -1,6 +1,8 @@
 package org.appproductions.fontRendering;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +24,8 @@ public class TextMaster {
 	}
 
 	public static void render() {
-		renderer.render(texts);
 		renderer.renderComponents(textsComponent);
+		renderer.render(texts);
 	}
 
 	public static void loadText(GUIText text) {
@@ -37,6 +39,20 @@ public class TextMaster {
 			texts.put(font, textBatch);
 		}
 		textBatch.add(text);
+		sortTexts();
+	}
+	
+	private static void sortTexts() {
+		for(FontType font:texts.keySet()) {
+			List<GUIText> text=texts.get(font);
+			Collections.sort(text, new Comparator<GUIText>() {
+
+				@Override
+				public int compare(GUIText o1, GUIText o2) {
+					return o1.getLayer()-o2.getLayer();
+				}
+			});
+		}
 	}
 
 	public static void loadText(TextComponent text) {

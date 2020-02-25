@@ -19,7 +19,7 @@ public class Mouse {
 	private static GLFWMouseButtonCallback mouseCallback;
 	private static GLFWCursorPosCallback cursorCallback;
 	private static GLFWScrollCallback scrollCallback;
-	private static boolean locked = false, grabbed=false;
+	private static boolean locked = false, grabbed = false;
 
 	public static void createMouse() {
 		mouseCallback = new GLFWMouseButtonCallback() {
@@ -34,8 +34,8 @@ public class Mouse {
 
 			@Override
 			public void invoke(long window, double x, double y) {
-				mouseDX=x-mouseX;
-				mouseDY=y-mouseY;
+				mouseDX = x - mouseX;
+				mouseDY = y - mouseY;
 				mouseX = x;
 				mouseY = y;
 			}
@@ -62,7 +62,7 @@ public class Mouse {
 	public static boolean isBlocked() {
 		return locked;
 	}
-	
+
 	public static boolean isGrabbed() {
 		return grabbed;
 	}
@@ -90,30 +90,30 @@ public class Mouse {
 			return new Vector2f((float) mouseX, (float) mouseY);
 		return new Vector2f();
 	}
-	
+
 	public static float getX() {
 		return (float) mouseX;
 	}
-	
+
 	public static float getY() {
 		return (float) mouseY;
 	}
-	
+
 	public static int getDX() {
-		double tmp=mouseDX;
-		mouseDX=0;
+		double tmp = mouseDX;
+		mouseDX = 0;
 		return (int) tmp;
 	}
-	
+
 	public static int getDY() {
-		double tmp=mouseDY;
-		mouseDY=0;
+		double tmp = mouseDY;
+		mouseDY = 0;
 		return (int) tmp;
 	}
-	
+
 	public static int getScrollDY() {
-		double tmp=scrollY;
-		scrollY=0;
+		double tmp = scrollY;
+		scrollY = 0;
 		return (int) tmp;
 	}
 
@@ -134,14 +134,16 @@ public class Mouse {
 	public static GLFWScrollCallback getScrollCallback() {
 		return scrollCallback;
 	}
-	
+
 	public static void setGrabbed(boolean grabbed) {
-		GLFW.glfwSetInputMode(DisplayManager.getWindow(), GLFW.GLFW_CURSOR, grabbed?GLFW.GLFW_CURSOR_DISABLED:GLFW.GLFW_CURSOR_NORMAL);
-		if(!grabbed)
-			GLFW.glfwSetCursorPos(DisplayManager.getWindow(), DisplayManager.getWidth()/2, DisplayManager.getHeight()/2);
-		Mouse.grabbed=grabbed;
+		GLFW.glfwSetInputMode(DisplayManager.getWindow(), GLFW.GLFW_CURSOR,
+				grabbed ? GLFW.GLFW_CURSOR_DISABLED : GLFW.GLFW_CURSOR_NORMAL);
+		if (!grabbed)
+			GLFW.glfwSetCursorPos(DisplayManager.getWindow(), DisplayManager.getWidth() / 2,
+					DisplayManager.getHeight() / 2);
+		Mouse.grabbed = grabbed;
 	}
-	
+
 	public static void setMousePosition(Vector2f pos) {
 		GLFW.glfwSetCursorPos(DisplayManager.getWindow(), pos.x, pos.y);
 	}

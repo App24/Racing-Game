@@ -2,13 +2,13 @@ package org.appproductions.entities;
 
 import java.util.List;
 
+import org.appproductions.config.KeyBinds;
 import org.appproductions.input.Keyboard;
 import org.appproductions.models.TexturedModel;
 import org.appproductions.rendererEngine.DisplayManager;
 import org.appproductions.terrains.Terrain;
 import org.appproductions.utils.Maths;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 
 public class Player extends Entity {
 
@@ -114,11 +114,11 @@ public class Player extends Entity {
 	}
 
 	private void checkInputs() {
-		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_W)) {
+		if (Keyboard.isKeyDown(KeyBinds.getKey("Forward"))) {
 			// if(!source.isPlaying())
 			// source.continuePlaying();
 			currentSpeed += ACCELERATION;
-		} else if (Keyboard.isKeyDown(GLFW.GLFW_KEY_S)) {
+		} else if (Keyboard.isKeyDown(KeyBinds.getKey("Backward"))) {
 			// if(!source.isPlaying())
 			// source.continuePlaying();
 			currentSpeed -= ACCELERATION;
@@ -129,9 +129,9 @@ public class Player extends Entity {
 
 		currentSpeed = Maths.clamp(currentSpeed, -SPEED, SPEED);
 
-		if (Keyboard.isKeyDown(GLFW.GLFW_KEY_A))
+		if (Keyboard.isKeyDown(KeyBinds.getKey("Left")))
 			currentTurnSpeed = TURN_SPEED * currentSpeed / SPEED;
-		else if (Keyboard.isKeyDown(GLFW.GLFW_KEY_D))
+		else if (Keyboard.isKeyDown(KeyBinds.getKey("Right")))
 			currentTurnSpeed = -TURN_SPEED * currentSpeed / SPEED;
 		else {
 			currentTurnSpeed = 0;

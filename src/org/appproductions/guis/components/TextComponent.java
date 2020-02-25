@@ -49,7 +49,7 @@ public class TextComponent extends GuiComponent {
 
 	public void setPosition(Vector2f pos) {
 		Vector2f guiPos = gui.getPosition();
-		lineMaxSize=gui.getScale().x;
+		lineMaxSize=centerText?gui.getScale().x:lineMaxSize-pos.x;
 		position = new Vector2f(
 				leftText ? (-guiPos.x + 1) / 2f + (pos.x * gui.getScale().x) + gui.getScale().x / 2f
 						: (-guiPos.x + 1) / 2f + (pos.x * gui.getScale().x) - gui.getScale().x / 2f,
@@ -83,8 +83,9 @@ public class TextComponent extends GuiComponent {
 	 * @param g - green value, between 0 and 1.
 	 * @param b - blue value, between 0 and 1.
 	 */
-	public void setColour(float r, float g, float b) {
+	public TextComponent setColour(float r, float g, float b) {
 		colour.set(r, g, b);
+		return this;
 	}
 
 	/**

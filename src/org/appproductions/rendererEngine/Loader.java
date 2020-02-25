@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.appproductions.config.Options;
 import org.appproductions.models.RawModel;
 import org.appproductions.objConverter.ModelData;
-import org.appproductions.utils.Config;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL;
@@ -105,8 +105,27 @@ public class Loader {
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
 		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, -0.4f);
-		if (GL.getCapabilities().GL_EXT_texture_filter_anisotropic
-				&& Config.setConfig("options").get("Graphics", "Anisotropic", boolean.class)) {
+		if (GL.getCapabilities().GL_EXT_texture_filter_anisotropic && (boolean) Options.getOption("Anisotropic")) {
+			float amount = Math.min(4f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+		} else if (!GL.getCapabilities().GL_EXT_texture_filter_anisotropic) {
+			System.out.println("Anisotropic not supported");
+		}
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+		textures.add(textureID);
+		return textureID;
+	}
+
+	public static int loadTexture(Image image) {
+		int textureID = GL13.glGenTextures();
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA,
+				GL11.GL_UNSIGNED_BYTE, image.getImage());
+		GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, -0.4f);
+		if (GL.getCapabilities().GL_EXT_texture_filter_anisotropic && (boolean) Options.getOption("Anisotropic")) {
 			float amount = Math.min(4f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
 		} else if (!GL.getCapabilities().GL_EXT_texture_filter_anisotropic) {
@@ -127,8 +146,7 @@ public class Loader {
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
 		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0);
-		if (GL.getCapabilities().GL_EXT_texture_filter_anisotropic
-				&& Config.setConfig("options").get("Graphics", "Anisotropic", boolean.class)) {
+		if (GL.getCapabilities().GL_EXT_texture_filter_anisotropic && (boolean) Options.getOption("Anisotropic")) {
 			float amount = Math.min(4f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
 		} else if (!GL.getCapabilities().GL_EXT_texture_filter_anisotropic) {

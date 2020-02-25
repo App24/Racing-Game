@@ -8,7 +8,7 @@ import org.appproductions.guis.components.TextComponent;
 public class TextMeshCreator {
 
 	protected static final double LINE_HEIGHT = 0.03f;
-	protected static final int SPACE_ASCII = 32;
+	protected static final int SPACE_ASCII = 32, NEW_LINE_ASCII=13,NEW_LINE_ASCII_2=10;
 
 	private MetaFile metaData;
 
@@ -45,6 +45,13 @@ public class TextMeshCreator {
 				currentWord = new Word(text.getFontSize());
 				continue;
 			}
+			else if((ascii==NEW_LINE_ASCII||ascii==NEW_LINE_ASCII_2)) {
+				lines.add(currentLine);
+				currentLine.attemptToAddWord(currentWord);
+				currentLine = new Line(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
+				currentWord = new Word(text.getFontSize());
+				continue;
+			}
 			Character character = metaData.getCharacter(ascii);
 			currentWord.addCharacter(character);
 		}
@@ -66,6 +73,13 @@ public class TextMeshCreator {
 					currentLine = new Line(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
 					currentLine.attemptToAddWord(currentWord);
 				}
+				currentWord = new Word(text.getFontSize());
+				continue;
+			}
+			else if((ascii==NEW_LINE_ASCII||ascii==NEW_LINE_ASCII_2)) {
+				lines.add(currentLine);
+				currentLine.attemptToAddWord(currentWord);
+				currentLine = new Line(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
 				currentWord = new Word(text.getFontSize());
 				continue;
 			}
