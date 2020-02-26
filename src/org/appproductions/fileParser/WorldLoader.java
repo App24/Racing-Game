@@ -3,11 +3,11 @@ package org.appproductions.fileParser;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.appproductions.cache.CachedModels;
 import org.appproductions.entities.Entity;
 import org.appproductions.entities.EntityManager;
 import org.appproductions.models.TexturedModel;
 import org.appproductions.terrains.Terrain;
-import org.appproductions.utils.CachedModels;
 import org.joml.Vector3f;
 
 public class WorldLoader extends FileParser {

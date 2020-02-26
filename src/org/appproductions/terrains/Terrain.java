@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 
 import org.appproductions.models.RawModel;
 import org.appproductions.rendererEngine.Loader;
-import org.appproductions.utils.Maths;
+import org.appproductions.toolbox.Maths;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

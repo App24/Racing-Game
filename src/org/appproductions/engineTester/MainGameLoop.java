@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.appproductions.audio.AudioManager;
 import org.appproductions.audio.AudioMaster;
+import org.appproductions.cache.CachedModels;
 import org.appproductions.config.ConfigManager;
 import org.appproductions.config.KeyBinds;
 import org.appproductions.config.Options;
@@ -15,11 +16,11 @@ import org.appproductions.entities.Player;
 import org.appproductions.fileParser.ModelLoader;
 import org.appproductions.fileParser.WorldLoader;
 import org.appproductions.fontMeshCreator.FontType;
-import org.appproductions.fontMeshCreator.GUIText;
-import org.appproductions.fontRendering.TextMaster;
-import org.appproductions.guis.Gui;
-import org.appproductions.guis.GuiRenderer;
-import org.appproductions.guis.GuiTexture;
+import org.appproductions.guis.GUIImage;
+import org.appproductions.guis.GUIManager;
+import org.appproductions.guis.GUIRenderer;
+import org.appproductions.guis.GUIText;
+import org.appproductions.guis.GUITexture;
 import org.appproductions.guis.components.ClickableComponent;
 import org.appproductions.guis.components.TextComponent;
 import org.appproductions.guis.components.interfaces.ICommand;
@@ -33,9 +34,8 @@ import org.appproductions.rendererEngine.MasterRenderer;
 import org.appproductions.terrains.Terrain;
 import org.appproductions.terrains.TerrainTexture;
 import org.appproductions.terrains.TerrainTexturePack;
-import org.appproductions.utils.CachedModels;
-import org.appproductions.utils.MousePicker;
-import org.appproductions.utils.Version;
+import org.appproductions.toolbox.MousePicker;
+import org.appproductions.toolbox.Version;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -45,7 +45,6 @@ public class MainGameLoop {
 		AudioMaster.init();
 		ConfigManager.init();
 		DisplayManager.createDisplay();
-		TextMaster.init();
 
 		MasterRenderer renderer = new MasterRenderer();
 
@@ -53,15 +52,25 @@ public class MainGameLoop {
 
 		FontType font = new FontType(Loader.loadTexture("Fonts/arial"), "Fonts/arial.fnt");
 		GUIText playerPosText = new GUIText("player pos", 1.5f, font, new Vector2f(0, 0), 1f, false);
-		new GUIText(Version.getVersion(), 1.5f, font, new Vector2f(0, 0.95f), 1f, false, true);
+		GUIText versionText = new GUIText(Version.getVersion(), 1.5f, font, new Vector2f(0, 0.95f), 1f, false, true);
 		GUIText fpsText = new GUIText("fps", 1.5f, font, new Vector2f(0, 0), 1f, false, true);
-		GUIText keybindsText = new GUIText("keybinds", 1.75f, font, new Vector2f(), 1f, false, 1);
+		GUIText deltaText = new GUIText("delta", 1.5f, font, new Vector2f(0, 0.95f), 1f, false);
+		GUIText keybindsText = new GUIText("keybinds", 1.75f, font, new Vector2f(0,0.05f), 0.5f, true);
 		
+		GUIManager.addGUI(playerPosText);
+		GUIManager.addGUI(versionText);
+		GUIManager.addGUI(fpsText);
+		GUIManager.addGUI(deltaText);
+		GUIManager.addGUI(keybindsText);
+		
+		keybindsText.setLayer(1);
+
 		fpsText.setHidden(!(boolean) Options.getOption("Show FPS"));
+		deltaText.setHidden(!(boolean) Options.getOption("Show Delta"));
 		
 		keybindsText.setHidden(true);
-		keybindsText.setColour(0, 0, 0);
-		keybindsText.setText(KeyBinds.keybindsToString());
+		keybindsText.setColor(0, 0, 0);
+		keybindsText.setTextString(KeyBinds.keybindsToString());
 
 		ModelLoader.loadModels();
 		List<Terrain> terrains = new ArrayList<Terrain>();
@@ -97,9 +106,8 @@ public class MainGameLoop {
 
 		MousePicker.createPicker(camera, renderer.getProjectionMatrix(), terrains);
 
-		GuiRenderer guiRenderer = new GuiRenderer();
-		List<Gui> guis = new ArrayList<Gui>();
-		Gui gui = new Gui(new GuiTexture(Loader.loadImage("button")),
+		GUIRenderer guiRenderer = new GUIRenderer();
+		GUIImage gui = new GUIImage(new GUITexture(Loader.loadImage("button")),
 				new Vector2f(0f, 0.85f), new Vector2f(0.15f, 0.15f));
 		
 		gui.addComponent(new ClickableComponent(new ICommand() {
@@ -109,9 +117,10 @@ public class MainGameLoop {
 				// player.reset();
 				keybindsText.setHidden(!keybindsText.isHidden());
 			}
-		}, new GuiTexture(Loader.loadImage("hover")), gui));
-		gui.addComponent(new TextComponent("Keybinds", 1.5f, font, new Vector2f(0, 0.5f-(0.15f)), 1f, true, gui).setColour(0, 0, 0));
-		guis.add(gui);
+		}, new GUITexture(Loader.loadImage("hover")), gui));
+		gui.addComponent(new TextComponent("Keybinds", 1.5f, font, new Vector2f(0, 0.5f-(0.15f)), 1f, true, gui));
+		gui.getComponent(TextComponent.class).getText().setColour(0, 0, 0);
+		GUIManager.addGUI(gui);
 
 		boolean antialiasing = Options.getOption("Antialiasing");
 		boolean postprocessing = Options.getOption("Post Processing");
@@ -121,14 +130,17 @@ public class MainGameLoop {
 		if (antialiasing)
 			multisampleFbo = new Fbo(DisplayManager.getWidth(), DisplayManager.getHeight());
 		PostProcessing.init();
-
+		
+		guiRenderer.initComponents();
+		
 		while (!DisplayManager.shouldClose()) {
 			camera.move();
 			player.move(terrains);
-			playerPosText.setText("x: " + String.format("%.2f", player.getPosition().x) + " y: "
+			playerPosText.setTextString("x: " + String.format("%.2f", player.getPosition().x) + " y: "
 					+ String.format("%.2f", player.getPosition().y) + " z: "
 					+ String.format("%.2f", player.getPosition().z));
-			fpsText.setText("FPS: " + DisplayManager.getFPS());
+			fpsText.setTextString("FPS: " + DisplayManager.getFPS());
+			deltaText.setTextString("Delta: "+DisplayManager.getDelta());
 
 			MousePicker.update();
 			if (Keyboard.isKeyPressed(KeyBinds.getKey("Mouse Lock"))) {
@@ -145,19 +157,21 @@ public class MainGameLoop {
 				multisampleFbo.resolveToScreen();
 			}
 
-			guiRenderer.render(guis);
-			TextMaster.render();
+			guiRenderer.render();
 
 			DisplayManager.updateDisplay();
 		}
 
 		PostProcessing.cleanUp();
+		
 		multisampleFbo.cleanUp();
 		outputFbo.cleanUp();
-		TextMaster.cleanUp();
+		
 		Loader.cleanUp();
+		
 		renderer.cleanUp();
 		guiRenderer.cleanUp();
+		
 		AudioManager.cleanUp();
 		AudioMaster.cleanUp();
 		DisplayManager.close();

@@ -16,7 +16,7 @@ import org.appproductions.shaders.StaticShader;
 import org.appproductions.skybox.SkyboxRenderer;
 import org.appproductions.terrains.Terrain;
 import org.appproductions.terrains.TerrainShader;
-import org.appproductions.utils.Maths;
+import org.appproductions.toolbox.Maths;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 

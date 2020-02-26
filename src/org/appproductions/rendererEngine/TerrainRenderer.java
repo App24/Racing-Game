@@ -6,7 +6,7 @@ import org.appproductions.models.RawModel;
 import org.appproductions.terrains.Terrain;
 import org.appproductions.terrains.TerrainShader;
 import org.appproductions.terrains.TerrainTexturePack;
-import org.appproductions.utils.Maths;
+import org.appproductions.toolbox.Maths;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;

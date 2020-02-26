@@ -1,7 +1,5 @@
 package org.appproductions.fontMeshCreator;
 
-import org.appproductions.guis.components.TextComponent;
-
 /**
  * Represents a font. It holds the font's texture atlas as well as having the
  * ability to create the quad vertices for any text using this font.
@@ -45,10 +43,7 @@ public class FontType {
 	 *            - the unloaded text.
 	 * @return Information about the vertices of all the quads.
 	 */
-	public TextMeshData loadText(GUIText text) {
-		return loader.createTextMesh(text);
-	}
-	public TextMeshData loadText(TextComponent text) {
+	public TextMeshData loadText(Text text) {
 		return loader.createTextMesh(text);
 	}
 

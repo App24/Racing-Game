@@ -3,44 +3,37 @@ package org.appproductions.guis;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.appproductions.guis.components.GuiComponent;
-import org.appproductions.input.Mouse;
-import org.appproductions.rendererEngine.DisplayManager;
+import org.appproductions.guis.components.GUIComponent;
 import org.joml.Vector2f;
 
-public class Gui {
-	private GuiTexture texture;
-	private Vector2f position;
-	private Vector2f scale;
+public abstract class GUI {
+	protected Vector2f position;
+	protected Vector2f scale;
 	protected boolean hidden = false;
-	private List<GuiComponent> components = new ArrayList<GuiComponent>();
+	protected List<GUIComponent> components = new ArrayList<GUIComponent>();
+	protected boolean isText=false;
 
-	public Gui(GuiTexture texture, Vector2f positiong, Vector2f scale) {
-		this.texture = texture;
-		this.position = positiong;
-		this.scale = scale;
+	public GUI(Vector2f position, Vector2f scale) {
+		this.position = position;
+		this.scale=scale;
 	}
-
-	public Gui(GuiTexture texture, Vector2f positiong, Vector2f scale, boolean keepRatio) {
-		this.texture = texture;
-		this.position = positiong;
-		float aspectRatio = (float) DisplayManager.getWidth() / (float) DisplayManager.getHeight();
-		this.scale = keepRatio
-				? new Vector2f((scale.x / texture.getHeight()) * texture.getWidth(),
-						((scale.y / texture.getWidth()) * texture.getHeight()) * aspectRatio)
-				: scale;
-		this.position.y -= keepRatio ? this.scale.y : 0;
+	
+	public GUI(Vector2f position, float scale) {
+		this.position = position;
+		this.scale=new Vector2f(scale);
 	}
-
-	public Gui(GuiTexture texture, Vector2f positiong, float scale) {
-		this.texture = texture;
-		this.position = positiong;
-		this.scale = new Vector2f(scale, scale);
+	
+	public boolean isText() {
+		return isText;
+	}
+	
+	public List<GUIComponent> getComponents(){
+		return components;
 	}
 
 	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
-		for (GuiComponent component : components) {
+		for (GUIComponent component : components) {
 			component.statusUpdate();
 		}
 	}
@@ -49,39 +42,31 @@ public class Gui {
 		return hidden;
 	}
 
-	public void addComponent(GuiComponent component) {
+	public void addComponent(GUIComponent component) {
 		component.statusUpdate();
 		components.add(component);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> T getComponent(Class<T> clazz) {
-		for (GuiComponent component : components) {
+		for (GUIComponent component : components) {
 			if (component.getClass() == clazz)
 				return (T) component;
 		}
 		return null;
 	}
 
-	public void setTexture(GuiTexture texture) {
-		this.texture = texture;
-	}
-
 	public void updateComponents() {
-		for (GuiComponent component : components) {
+		for (GUIComponent component : components) {
 			if (!hidden)
 				component.update();
 		}
 	}
-
-	public GuiTexture getTexture() {
-		return texture;
-	}
-
+	
 	public Vector2f getPosition() {
 		return position;
 	}
-
+	
 	public Vector2f getScale() {
 		return scale;
 	}

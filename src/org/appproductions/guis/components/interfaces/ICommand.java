@@ -4,4 +4,10 @@ public interface ICommand {
 	
 	public void onClick();
 	
+	default void onHover() {
+	}
+	
+	default void onLeave() {
+	}
+	
 }

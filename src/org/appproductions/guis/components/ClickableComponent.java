@@ -1,38 +1,35 @@
 package org.appproductions.guis.components;
 
-import org.appproductions.guis.Gui;
-import org.appproductions.guis.GuiTexture;
+import org.appproductions.guis.GUI;
+import org.appproductions.guis.GUITexture;
 import org.appproductions.guis.components.interfaces.ICommand;
 import org.appproductions.input.Mouse;
-import org.appproductions.utils.MousePicker;
+import org.appproductions.toolbox.MousePicker;
 import org.lwjgl.glfw.GLFW;
 
-public class ClickableComponent extends GuiComponent {
+public class ClickableComponent extends GUIComponent {
 
 	private ICommand command;
-	private GuiTexture normal, hover, click;
+	private GUITexture normal, hover, click;
 	private boolean leave;
+	private ImageComponent imgComp;
+	private boolean hovered = false, leaved = false;
 
-	public ClickableComponent(ICommand command, Gui gui) {
+	public ClickableComponent(ICommand command, GUI gui) {
 		super(CLICKABLE, gui);
 		this.command = command;
-		normal = gui.getTexture();
-		hover = gui.getTexture();
-		click = gui.getTexture();
 	}
 
-	public ClickableComponent(ICommand command, GuiTexture hover, Gui gui) {
+	public ClickableComponent(ICommand command, GUITexture hover, GUI gui) {
 		super(CLICKABLE, gui);
 		this.command = command;
-		normal = gui.getTexture();
 		this.hover = hover;
 		click = hover;
 	}
 
-	public ClickableComponent(ICommand command, GuiTexture hover, GuiTexture click, Gui gui) {
+	public ClickableComponent(ICommand command, GUITexture hover, GUITexture click, GUI gui) {
 		super(CLICKABLE, gui);
 		this.command = command;
-		normal = gui.getTexture();
 		this.hover = hover;
 		this.click = click;
 	}
@@ -43,19 +40,30 @@ public class ClickableComponent extends GuiComponent {
 			if (Mouse.isButtonPressed(GLFW.GLFW_MOUSE_BUTTON_1)) {
 				command.onClick();
 			}
-			if(!Mouse.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
-				gui.setTexture(hover);
-				leave=false;
+			if (!Mouse.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
+				imgComp.setTexture(hover);
+				if(!hovered) {
+					command.onHover();
+					hovered=true;
+				}
+			} else if (Mouse.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_1) && leave) {
+				imgComp.setTexture(hover);
+				if(!hovered) {
+					command.onHover();
+					hovered=true;
+				}
+			} else if (Mouse.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_1) && !leave) {
+				imgComp.setTexture(click);
 			}
-			else if(Mouse.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_1)&&leave) {
-				gui.setTexture(hover);
-			}
-			else if (Mouse.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_1)&&!leave) {
-				gui.setTexture(click);
-			}
+			leaved=false;
 		} else {
-			leave=true;
-			gui.setTexture(normal);
+			leave = true;
+			imgComp.setTexture(normal);
+			if(!leaved) {
+				command.onLeave();
+				leaved=true;
+			}
+			hovered=false;
 		}
 	}
 
@@ -73,8 +81,17 @@ public class ClickableComponent extends GuiComponent {
 
 	@Override
 	protected void onStatusUpdate() {
-		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	protected void onLoad() {
+		imgComp = gui.getComponent(ImageComponent.class);
+		normal = imgComp.getTexture();
+		if (hover == null) {
+			hover = normal;
+			click = normal;
+		}
 	}
 
 }

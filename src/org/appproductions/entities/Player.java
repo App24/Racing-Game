@@ -7,7 +7,7 @@ import org.appproductions.input.Keyboard;
 import org.appproductions.models.TexturedModel;
 import org.appproductions.rendererEngine.DisplayManager;
 import org.appproductions.terrains.Terrain;
-import org.appproductions.utils.Maths;
+import org.appproductions.toolbox.Maths;
 import org.joml.Vector3f;
 
 public class Player extends Entity {

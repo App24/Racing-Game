@@ -2,11 +2,11 @@ package org.appproductions.fileParser;
 
 import java.util.List;
 
+import org.appproductions.cache.CachedModels;
 import org.appproductions.models.TexturedModel;
 import org.appproductions.objConverter.OBJFileLoader;
 import org.appproductions.rendererEngine.Loader;
 import org.appproductions.textures.ModelTexture;
-import org.appproductions.utils.CachedModels;
 
 public class ModelLoader extends FileParser {
 	

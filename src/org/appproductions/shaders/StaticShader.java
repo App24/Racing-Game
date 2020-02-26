@@ -2,7 +2,7 @@ package org.appproductions.shaders;
 
 import org.appproductions.entities.Camera;
 import org.appproductions.entities.Light;
-import org.appproductions.utils.Maths;
+import org.appproductions.toolbox.Maths;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;

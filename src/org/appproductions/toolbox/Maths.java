@@ -1,4 +1,4 @@
-package org.appproductions.utils;
+package org.appproductions.toolbox;
 
 import org.appproductions.entities.Camera;
 import org.joml.Matrix4f;

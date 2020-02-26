@@ -3,10 +3,11 @@ package org.appproductions.rendererEngine;
 import org.appproductions.config.Options;
 import org.appproductions.input.Keyboard;
 import org.appproductions.input.Mouse;
-import org.appproductions.utils.Sync;
+import org.appproductions.toolbox.Sync;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowFocusCallbackI;
 import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -16,7 +17,8 @@ public class DisplayManager {
 
 	private static long window;
 	private static int width, height;
-	private static int fps_cap = 60;
+	private static int fps_cap;
+	private static int current_max_fps;
 	private static long lastTimeFrame;
 	private static float delta;
 	private static int frames;
@@ -34,6 +36,7 @@ public class DisplayManager {
 		height = Options.getOption("Height");
 
 		fps_cap = Options.getOption("Max FPS");
+		current_max_fps=fps_cap;
 
 		boolean antialiasing = Options.getOption("Antialiasing");
 
@@ -87,6 +90,19 @@ public class DisplayManager {
 				GL11.glViewport(0, 0, width, height);
 			}
 		});
+		
+		GLFW.glfwSetWindowFocusCallback(window, new GLFWWindowFocusCallbackI() {
+			
+			@Override
+			public void invoke(long window, boolean focus) {
+				if(focus) {
+					current_max_fps=fps_cap;
+				}else {
+					current_max_fps=10;
+				}
+				
+			}
+		});
 
 		GLFW.glfwSetCursorPosCallback(window, Mouse.getCursorCallback());
 		GLFW.glfwSetKeyCallback(window, Keyboard.getKeyCallback());
@@ -97,7 +113,7 @@ public class DisplayManager {
 	public static void updateDisplay() {
 		GLFW.glfwPollEvents();
 		GLFW.glfwSwapBuffers(window);
-		Sync.sync(fps_cap);
+		Sync.sync(current_max_fps);
 		long currentTimeFrame = System.currentTimeMillis();
 		delta = (currentTimeFrame - lastTimeFrame) / 1000f;
 		lastTimeFrame = currentTimeFrame;

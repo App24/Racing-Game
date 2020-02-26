@@ -1,16 +1,16 @@
 package org.appproductions.guis.components;
 
-import org.appproductions.guis.Gui;
+import org.appproductions.guis.GUI;
 
-public abstract class GuiComponent {
+public abstract class GUIComponent {
 	
-	protected static final int CLICKABLE=0, TEXT=1, SOUND=2;
+	protected static final int CLICKABLE=0, TEXT=1, SOUND=2, IMAGE=3;
 	
-	protected Gui gui;
+	protected GUI gui;
 	
 	protected int id;
 	
-	public GuiComponent(int id, Gui gui) {
+	public GUIComponent(int id, GUI gui) {
 		this.id=id;
 		this.gui=gui;
 	}
@@ -22,6 +22,12 @@ public abstract class GuiComponent {
 	public void statusUpdate() {
 		onStatusUpdate();
 	}
+	
+	public void loadComponent() {
+		onLoad();
+	}
+	
+	protected abstract void onLoad();
 
 	protected abstract void onUpdate();
 	

@@ -3,7 +3,7 @@ package org.appproductions.skybox;
 import org.appproductions.entities.Camera;
 import org.appproductions.rendererEngine.DisplayManager;
 import org.appproductions.shaders.ShaderProgram;
-import org.appproductions.utils.Maths;
+import org.appproductions.toolbox.Maths;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

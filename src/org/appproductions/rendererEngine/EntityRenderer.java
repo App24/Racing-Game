@@ -8,7 +8,7 @@ import org.appproductions.models.RawModel;
 import org.appproductions.models.TexturedModel;
 import org.appproductions.shaders.StaticShader;
 import org.appproductions.textures.ModelTexture;
-import org.appproductions.utils.Maths;
+import org.appproductions.toolbox.Maths;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
